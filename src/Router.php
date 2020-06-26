@@ -61,48 +61,12 @@ class Router implements IMiddleware
      */
     public function process(IServerRequest $request, IRequestHandler $handler): IResponse
     {
-        $context = $this->actions->resolve($request);
+        $action = $this->actions->resolve($request);
 
-        if (null === $context)
+        if (null === $action)
             return $handler->handle($request);
 
-        $action  = $context->getAction();
-        $filters = $context->getFilters();
-
-        $result = (new class($action, $filters) implements IAction
-        {
-            private IAction $action;
-            private Iterator $filters;
-
-            function __construct(IAction $action, Iterator $filters)
-            {
-                $this->action  = $action;
-                $this->filters = $filters;
-            }
-
-            /**
-             * @inheritDoc
-             */
-            function execute(IServerRequest $request)
-            {
-                return $this->filters->valid()
-                    ? $this->getNext()->apply($request, $this)
-                    : $this->action->execute($request);
-            }
-
-            private function getNext(): IActionFilter
-            {
-                try
-                {
-                    return $this->filters->current();
-                }
-                finally
-                {
-                    $this->filters->next();
-                }
-            }
-
-        })->execute($request);
+        $result = $action->execute($request);
 
         if (!($result instanceof IActionResult))
             $result = $this->serializer->convert($request, $result);

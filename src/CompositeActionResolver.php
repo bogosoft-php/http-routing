@@ -37,16 +37,16 @@ final class CompositeActionResolver implements IActionResolver
     /**
      * @inheritDoc
      */
-    function resolve(IServerRequest $request): ?ActionContext
+    function resolve(IServerRequest $request): ?IAction
     {
-        /** @var ActionContext $context */
-        $context = null;
+        /** @var IAction $action */
+        $action = null;
 
         /** @var IActionResolver $resolver */
         foreach ($this->resolvers as $resolver)
-            if (null !== ($context = $resolver->resolve($request)))
+            if (null !== ($action = $resolver->resolve($request)))
                 break;
 
-        return $context;
+        return $action;
     }
 }

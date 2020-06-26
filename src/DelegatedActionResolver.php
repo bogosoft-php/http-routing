@@ -12,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface as IServerRequest;
  *
  * The delegate is expected to be of the form:
  *
- * - fn({@see IServerRequest}): {@see ActionContext}
+ * - fn({@see IServerRequest}): {@see IAction}
  *
  * This class cannot be inherited.
  *
@@ -37,7 +37,7 @@ final class DelegatedActionResolver implements IActionResolver
     /**
      * @inheritDoc
      */
-    function resolve(IServerRequest $request): ?ActionContext
+    function resolve(IServerRequest $request): ?IAction
     {
         return ($this->delegate)($request);
     }
