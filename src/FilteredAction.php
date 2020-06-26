@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bogosoft\Http\Routing;
 
 use ArrayIterator;
+use Iterator;
 use Psr\Http\Message\ServerRequestInterface as IServerRequest;
 
 /**
@@ -16,10 +17,25 @@ use Psr\Http\Message\ServerRequestInterface as IServerRequest;
  */
 final class FilteredAction implements IAction
 {
-    private IAction $action;
+    private static function append(iterable $items, iterable $after): iterable
+    {
+        yield from $items;
+        yield from $after;
+    }
 
-    /** @var IActionFilter[] */
-    private array $filters;
+    private static function iterate($item): iterable
+    {
+        yield $item;
+    }
+
+    private static function prepend(iterable $items, iterable $before): iterable
+    {
+        yield from $before;
+        yield from $items;
+    }
+
+    private IAction $action;
+    private iterable $filters;
 
     /**
      * Create a new filtered action.
@@ -42,7 +58,17 @@ final class FilteredAction implements IAction
      */
     function appendFilter(IActionFilter $filter): void
     {
-        $this->filters[] = $filter;
+        $this->appendFilters(self::iterate($filter));
+    }
+
+    /**
+     * Append a sequence of filters to the current filtered action.
+     *
+     * @param iterable $filters A sequence of {@see IActionFilter} objects.
+     */
+    function appendFilters(iterable $filters): void
+    {
+        $this->filters = self::append($this->filters, $filters);
     }
 
     /**
@@ -50,15 +76,19 @@ final class FilteredAction implements IAction
      */
     function execute(IServerRequest $request)
     {
-        return (new class($this->action, $this->filters) implements IAction
+        $filters = is_array($this->filters)
+            ? new ArrayIterator($this->filters)
+            : $this->filters;
+
+        return (new class($this->action, $filters) implements IAction
         {
             private IAction $action;
-            private ArrayIterator $filters;
+            private Iterator $filters;
 
-            function __construct(IAction $action, array $filters)
+            function __construct(IAction $action, Iterator $filters)
             {
                 $this->action  = $action;
-                $this->filters = new ArrayIterator($filters);
+                $this->filters = $filters;
             }
 
             function execute(IServerRequest $request)
@@ -91,6 +121,16 @@ final class FilteredAction implements IAction
      */
     function prependFilter(IActionFilter $filter): void
     {
-        array_unshift($this->filters, $filter);
+        $this->prependFilters(self::iterate($filter));
+    }
+
+    /**
+     * Prepend a sequence of filters to the current filtered action.
+     *
+     * @param iterable $filters A sequence of {@see IActionFilter} objects.
+     */
+    function prependFilters(iterable $filters): void
+    {
+        $this->filters = self::prepend($this->filters, $filters);
     }
 }
