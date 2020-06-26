@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Bogosoft\Http\Routing;
 
-use Iterator;
 use Psr\Http\Message\ResponseFactoryInterface as IResponseFactory;
 use Psr\Http\Message\ResponseInterface as IResponse;
 use Psr\Http\Message\ServerRequestInterface as IServerRequest;

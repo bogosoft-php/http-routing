@@ -28,7 +28,7 @@ final class DelegatedActionResult implements IActionResult
      *
      * @param callable $delegate An invokable object to which the application
      *                           of the result of an action to an HTTP
-     *                           will be delegated.
+     *                           response will be delegated.
      */
     function __construct(callable $delegate)
     {
