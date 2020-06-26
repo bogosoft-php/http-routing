@@ -25,7 +25,7 @@ final class RouterParameters
     public IResponseFactory $responses;
 
     /**
-     * @var IResultSerializer|null Get or set a result serializer.
+     * @var IResultConverter|null Get or set a result converter.
      */
-    public ?IResultSerializer $serializer = null;
+    public ?IResultConverter $converter = null;
 }

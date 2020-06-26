@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface as IResponse;
 use Psr\Http\Message\ServerRequestInterface as IServerRequest;
 
 /**
- * An implementation of the {@see IResultSerializer} that generates action
+ * An implementation of the {@see IResultConverter} that generates action
  * results which serialize arbitrary data as JSON to the body of an HTTP
  * response.
  *
@@ -21,7 +21,7 @@ use Psr\Http\Message\ServerRequestInterface as IServerRequest;
  *
  * @package Bogosoft\Http\Routing
  */
-final class DefaultResultSerializer implements IResultSerializer
+final class DefaultResultConverter implements IResultConverter
 {
     /**
      * @inheritDoc

@@ -7,7 +7,7 @@ namespace Bogosoft\Http\Routing;
 use Psr\Http\Message\ServerRequestInterface as IServerRequest;
 
 /**
- * An implementation of the {@see IResultSerializer} contract that delegates
+ * An implementation of the {@see IResultConverter} contract that delegates
  * the creation of an action result from arbitrary data to a {@see callable}
  * object.
  *
@@ -19,13 +19,13 @@ use Psr\Http\Message\ServerRequestInterface as IServerRequest;
  *
  * @package Bogosoft\Http\Routing
  */
-final class DelegatedResultSerializer implements IResultSerializer
+final class DelegatedResultConverter implements IResultConverter
 {
     /** @var callable */
     private $delegate;
 
     /**
-     * Create a new delegated result serializer.
+     * Create a new delegated result converter.
      *
      * @param callable $delegate An invokable object to which conversion of
      *                           arbitrary data to an action result will be

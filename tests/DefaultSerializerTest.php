@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Bogosoft\Http\Routing\DefaultResultSerializer;
+use Bogosoft\Http\Routing\DefaultResultConverter;
 use Bogosoft\Http\Routing\IActionResult;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -21,7 +21,7 @@ class DefaultSerializerTest extends TestCase
         $expected->age  = 40;
         $expected->name = 'Bob';
 
-        $serializer = new DefaultResultSerializer();
+        $serializer = new DefaultResultConverter();
 
         $request = new ServerRequest('GET', '/');
 

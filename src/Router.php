@@ -41,7 +41,7 @@ class Router implements IMiddleware
 
     private IActionResolver $actions;
     private IResponseFactory $responses;
-    private IResultSerializer $serializer;
+    private IResultConverter $converter;
 
     /**
      * Create a new HTTP request router.
@@ -51,9 +51,9 @@ class Router implements IMiddleware
      */
     function __construct(RouterParameters $params)
     {
-        $this->actions    = $params->actions;
-        $this->responses  = $params->responses;
-        $this->serializer = $params->serializer ?? new DefaultResultSerializer();
+        $this->actions   = $params->actions;
+        $this->responses = $params->responses;
+        $this->converter = $params->converter ?? new DefaultResultConverter();
     }
 
     /**
@@ -69,7 +69,7 @@ class Router implements IMiddleware
         $result = $action->execute($request);
 
         if (!($result instanceof IActionResult))
-            $result = $this->serializer->convert($request, $result);
+            $result = $this->converter->convert($request, $result);
 
         $response = $this->responses->createResponse();
 
