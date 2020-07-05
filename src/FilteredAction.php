@@ -17,58 +17,20 @@ use Psr\Http\Message\ServerRequestInterface as IServerRequest;
  */
 final class FilteredAction implements IAction
 {
-    private static function append(iterable $items, iterable $after): iterable
-    {
-        yield from $items;
-        yield from $after;
-    }
-
-    private static function iterate($item): iterable
-    {
-        yield $item;
-    }
-
-    private static function prepend(iterable $items, iterable $before): iterable
-    {
-        yield from $before;
-        yield from $items;
-    }
-
     private IAction $action;
-    private iterable $filters;
+    public ActionFilterQueue $filters;
 
     /**
      * Create a new filtered action.
      *
-     * @param IAction           $action An executable action.
-     * @param IActionFilter ...$filters Zero or more filters to be applied
-     *                                  to the given action upon its execution.
+     * @param IAction  $action  An executable action.
+     * @param iterable $filters Zero or more filters to be applied to the
+     *                          given action upon its execution.
      */
-    function __construct(IAction $action, IActionFilter ...$filters)
+    function __construct(IAction $action, iterable $filters = [])
     {
         $this->action  = $action;
-        $this->filters = $filters;
-    }
-
-    /**
-     * Append an action filter to the sequence of filters to be applied to
-     * the current action.
-     *
-     * @param IActionFilter $filter An action filter.
-     */
-    function appendFilter(IActionFilter $filter): void
-    {
-        $this->appendFilters(self::iterate($filter));
-    }
-
-    /**
-     * Append a sequence of filters to the current filtered action.
-     *
-     * @param iterable $filters A sequence of {@see IActionFilter} objects.
-     */
-    function appendFilters(iterable $filters): void
-    {
-        $this->filters = self::append($this->filters, $filters);
+        $this->filters = new ActionFilterQueue($filters);
     }
 
     /**
@@ -111,26 +73,5 @@ final class FilteredAction implements IAction
             }
 
         })->execute($request);
-    }
-
-    /**
-     * Prepend an action filter to the sequence of filters to be applied to
-     * the current action.
-     *
-     * @param IActionFilter $filter An action filter.
-     */
-    function prependFilter(IActionFilter $filter): void
-    {
-        $this->prependFilters(self::iterate($filter));
-    }
-
-    /**
-     * Prepend a sequence of filters to the current filtered action.
-     *
-     * @param iterable $filters A sequence of {@see IActionFilter} objects.
-     */
-    function prependFilters(iterable $filters): void
-    {
-        $this->filters = self::prepend($this->filters, $filters);
     }
 }
