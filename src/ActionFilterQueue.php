@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Bogosoft\Http\Routing;
 
+use IteratorAggregate;
+
 /**
  * Represents a first-in, first-out (FIFO) collection of action filters.
  *
  * @package Bogosoft\Http\Routing
  */
-class ActionFilterQueue implements \IteratorAggregate
+class ActionFilterQueue implements IteratorAggregate
 {
     private static function concat(iterable $a, iterable $b): iterable
     {

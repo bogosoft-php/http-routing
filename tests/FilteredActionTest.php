@@ -8,7 +8,6 @@ use Bogosoft\Http\Routing\DelegatedAction;
 use Bogosoft\Http\Routing\DelegatedActionFilter;
 use Bogosoft\Http\Routing\FilteredAction;
 use Bogosoft\Http\Routing\IAction;
-use Bogosoft\Http\Routing\IActionFilter;
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface as IServerRequest;
