@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Bogosoft\Http\Routing;
 
-use ArrayIterator;
 use Iterator;
 use Psr\Http\Message\ServerRequestInterface as IServerRequest;
 
@@ -38,9 +37,8 @@ final class FilteredAction implements IAction
      */
     function execute(IServerRequest $request)
     {
-        $filters = is_array($this->filters)
-            ? new ArrayIterator($this->filters)
-            : $this->filters;
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $filters = $this->filters->getIterator();
 
         return (new class($this->action, $filters) implements IAction
         {

@@ -39,7 +39,7 @@ class FilteredActionTest extends TestCase
             yield $item;
     }
 
-    function testCanAppendFilterToFilteredAction(): void
+    function testCanQueueFilterOnFilteredAction(): void
     {
         $request = new ServerRequest('GET', '/');
 
@@ -61,14 +61,14 @@ class FilteredActionTest extends TestCase
             return str_replace($oldSubject, $newSubject, $result);
         };
 
-        $action->appendFilter(new DelegatedActionFilter($filter));
+        $action->filters->enqueueFilter(new DelegatedActionFilter($filter));
 
         $actual = $action->execute($request);
 
         $this->assertEquals("Hello, $newSubject!", $actual);
     }
 
-    function testCanAppendMultipleFiltersToFilteredAction(): void
+    function testCanQueueMultipleFiltersOnFilteredAction(): void
     {
         $request = new ServerRequest('GET', '/');
 
@@ -98,70 +98,7 @@ class FilteredActionTest extends TestCase
 
         $filters = self::repeat(new DelegatedActionFilter($filter), $count);
 
-        $action->appendFilters($filters);
-
-        /** @var int $actual */
-        $actual = $action->execute($request);
-
-        $this->assertEquals($count, $actual);
-    }
-
-    function testCanPrependFilterToFilteredAction(): void
-    {
-        $expected = 'Nothing to see here.';
-
-        $request = new ServerRequest('GET', '/');
-
-        $action = self::getGreetAction('World');
-        $action = new FilteredAction($action);
-
-        $actual = $action->execute($request);
-
-        $this->assertEquals('Hello, World!', $actual);
-
-        $filter = function(IServerRequest $request, IAction $action) use ($expected)
-        {
-            return $expected;
-        };
-
-        $action->prependFilter(new DelegatedActionFilter($filter));
-
-        $actual = $action->execute($request);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    function testCanPrependMultipleFiltersToFilteredAction(): void
-    {
-        $request = new ServerRequest('GET', '/');
-
-        $start = 0;
-
-        $execute = function(IServerRequest $request) use ($start)
-        {
-            return $start;
-        };
-
-        $action = new DelegatedAction($execute);
-        $action = new FilteredAction($action);
-
-        $actual = $action->execute($request);
-
-        $this->assertEquals($start, $actual);
-
-        $count = 16;
-
-        $filter = function(IServerRequest $request, IAction $action)
-        {
-            /** @var int $number */
-            $number = $action->execute($request);
-
-            return $number + 1;
-        };
-
-        $filters = self::repeat(new DelegatedActionFilter($filter), $count);
-
-        $action->prependFilters($filters);
+        $action->filters->enqueueFilters($filters);
 
         /** @var int $actual */
         $actual = $action->execute($request);
