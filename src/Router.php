@@ -39,8 +39,8 @@ class Router implements IMiddleware
     }
 
     private IActionResolver $actions;
-    private IResponseFactory $responses;
     private IResultConverter $converter;
+    private IResponseFactory $responses;
 
     /**
      * Create a new HTTP request router.
@@ -52,7 +52,7 @@ class Router implements IMiddleware
     {
         $this->actions   = $params->actions;
         $this->responses = $params->responses;
-        $this->converter = $params->converter ?? new DefaultResultConverter();
+        $this->converter = $params->converter;
     }
 
     /**

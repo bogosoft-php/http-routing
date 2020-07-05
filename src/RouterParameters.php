@@ -20,12 +20,12 @@ final class RouterParameters
     public IActionResolver $actions;
 
     /**
+     * @var IResultConverter Get or set a result converter.
+     */
+    public IResultConverter $converter;
+
+    /**
      * @var IResponseFactory Get or set an HTTP response factory.
      */
     public IResponseFactory $responses;
-
-    /**
-     * @var IResultConverter|null Get or set a result converter.
-     */
-    public ?IResultConverter $converter = null;
 }

@@ -21,7 +21,9 @@ class DefaultSerializerTest extends TestCase
         $expected->age  = 40;
         $expected->name = 'Bob';
 
-        $serializer = new DefaultResultConverter();
+        $streams = new DefaultStreamFactory();
+
+        $serializer = new DefaultResultConverter($streams);
 
         $request = new ServerRequest('GET', '/');
 

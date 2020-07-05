@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Bogosoft\Http\Routing;
 
-use Bogosoft\Http\DelegatedDeferredStream;
-use Psr\Http\Message\ResponseInterface as IResponse;
+use Bogosoft\Http\Routing\Results\JsonResult;
 use Psr\Http\Message\ServerRequestInterface as IServerRequest;
+use Psr\Http\Message\StreamFactoryInterface as IStreamFactory;
 
 /**
  * An implementation of the {@see IResultConverter} that generates action
@@ -23,39 +23,23 @@ use Psr\Http\Message\ServerRequestInterface as IServerRequest;
  */
 final class DefaultResultConverter implements IResultConverter
 {
+    private IStreamFactory $streams;
+
+    /**
+     * Create a new default result converter.
+     *
+     * @param IStreamFactory $streams A strategy for creating streams.
+     */
+    function __construct(IStreamFactory $streams)
+    {
+        $this->streams = $streams;
+    }
+
     /**
      * @inheritDoc
      */
     function convert(IServerRequest $request, $data): IActionResult
     {
-        return new class($data) implements IActionResult
-        {
-            /** @var mixed */
-            private $data;
-
-            function __construct($data)
-            {
-                $this->data = $data;
-            }
-
-            function apply(IResponse $response): IResponse
-            {
-                /**
-                 * @param resource $target
-                 */
-                $copy = function($target)
-                {
-                    $serialized = json_encode($this->data);
-
-                    fwrite($target, $serialized);
-                };
-
-                $body = new DelegatedDeferredStream($copy);
-
-                return $response
-                    ->withBody($body)
-                    ->withHeader('Content-Type', 'application/json');
-            }
-        };
+        return new JsonResult($data, $this->streams);
     }
 }
