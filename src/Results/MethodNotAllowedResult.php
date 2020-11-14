@@ -37,4 +37,14 @@ class MethodNotAllowedResult extends StatusCodeResult
 
         return parent::apply($response)->withHeader('Allow', $methods);
     }
+
+    /**
+     * Get an array of names corresponding to allowed HTTP request methods.
+     *
+     * @return array An array of HTTP request method names.
+     */
+    function getAllowedMethods(): array
+    {
+        return $this->allowed;
+    }
 }
