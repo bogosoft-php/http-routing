@@ -34,4 +34,14 @@ class StatusCodeResult implements IActionResult
     {
         return $response->withStatus($this->code);
     }
+
+    /**
+     * Get the HTTP status code assigned to the current action result.
+     *
+     * @return int An integer HTTP status code.
+     */
+    function getStatusCode(): int
+    {
+        return $this->code;
+    }
 }
